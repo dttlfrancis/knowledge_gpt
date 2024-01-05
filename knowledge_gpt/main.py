@@ -27,10 +27,8 @@ with col1:
 with col2:
     st.markdown("# Deloitte - Annexe fiscale 2024")
 
-# Chargement et affichage de l'animation Lottie avec une taille réduite
-lottie_animation = load_lottieurl("https://lottie.host/daab29e2-776f-4308-804f-60a00e592381/eNlqUMlXbQ.json")
-if lottie_animation:
-    st_lottie(lottie_animation, speed=1, width=150, height=150, loop=True, autoplay=True)
+with st.echo():
+    st.lottie("https://assets5.lottiefiles.com/packages/lf20_V9t630.json", speed=1, width=150, height=150, loop=True, autoplay=True)
 
 # Activation du cache
 bootstrap_caching()
