@@ -70,7 +70,7 @@ try:
                     openai_api_key=openai_api_key,
                 )
 except Exception as e:
-    display_file_read_error(e, file_name="annexe.pdf")
+     st.error(f"Erreur lors de la lecture du fichier : {e}")
 
 # Description de l'objectif de la plateforme
 with st.expander("À propos de cette plateforme"):
