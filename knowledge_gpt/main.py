@@ -26,14 +26,14 @@ with col2:
     st.markdown("# Deloitte - Annexe fiscale 2024")
 
 # Création de 5 colonnes
-col1, col2, col3, col4, col5 = st.columns(5)
+col11, col22, col33 = st.columns(3)
 
 # Chargement et affichage de l'animation Lottie dans les 3 colonnes du milieu
-with col2:
+with col11:
     st.write("")  # Écriture de contenu vide pour maintenir la colonne
-with col3:
+with col22:
     st_lottie("https://lottie.host/daab29e2-776f-4308-804f-60a00e592381/eNlqUMlXbQ.json")
-with col4:
+with col33:
     st.write("")  # Écriture de contenu vide pour maintenir la colonne
 
 # Activation du cache
@@ -52,53 +52,54 @@ api_part8 = "BeHz2RX9sbM6h1"
 openai_api_key = (api_part1 + api_part2 + api_part3 + api_part4 + 
                   api_part5 + api_part6 + api_part7 + api_part8)
 
-uploaded_file = st.file_uploader(
-    "Téléchargez un fichier PDF, DOCX ou TXT",
-    type=["pdf", "docx", "txt"],
-    help="Les documents scannés ne sont pas encore supportés !",
-)
+# Chargement automatique du fichier PDF
+url_pdf = "https://www.dgbf.ci/wp-content/uploads/2023/12/ANNEXE-1-ANNEXE-FISCALE.pdf"
+response = requests.get(url_pdf)
+file = response.content
 
-if uploaded_file is not None:
-    try:
-        file = read_file(uploaded_file)
-        chunked_file = chunk_file(file, chunk_size=300, chunk_overlap=0)
-        
-        if is_file_valid(file):
-            with st.spinner("Indexation du document... Cela peut prendre un moment ⏳"):
-                folder_index = embed_files(
-                    files=[chunked_file],
-                    embedding="openai",
-                    vector_store="faiss",
-                    openai_api_key=openai_api_key,
-                )
-                
-            query = st.text_area("Posez une question à propos du document")
-            
-            if st.button("Soumettre"):
-                if is_query_valid(query):
-                    llm = get_llm(model="gpt-4", openai_api_key=openai_api_key, temperature=0)
-                    result = query_folder(
-                        folder_index=folder_index,
-                        query=query,
-                        return_all=False,
-                        llm=llm,
-                    )
+# Traitement du fichier PDF
+try:
+    chunked_file = chunk_file(file, chunk_size=300, chunk_overlap=0)
+    
+    if is_file_valid(file):
+        with st.spinner("Indexation du document... Cela peut prendre un moment ⏳"):
+            folder_index = embed_files(
+                files=[chunked_file],
+                embedding="openai",
+                vector_store="faiss",
+                openai_api_key=openai_api_key,
+            )
+except Exception as e:
+    display_file_read_error(e, file_name="ANNEXE-1-ANNEXE-FISCALE.pdf")
 
-                    st.markdown("#### Réponse")
-                    st.markdown(result.answer)
+# Description de l'objectif de la plateforme
+with st.expander("À propos de cette plateforme"):
+    st.markdown("""
+    ## Informations sur l'Annexe Fiscale de la Côte d'Ivoire
+    Cette plateforme a été conçue pour fournir des informations détaillées et accessibles aux professionnels et aux particuliers concernant l'annexe fiscale en Côte d'Ivoire. Notre objectif est de simplifier la compréhension des aspects fiscaux et de permettre une analyse approfondie des documents officiels. Que vous soyez un expert-comptable, un entrepreneur, ou simplement un citoyen intéressé par la fiscalité ivoirienne, cet outil est là pour vous aider à naviguer dans les complexités des lois et règlements fiscaux.
+    """)
 
-                    # Affichage des sources relatives à la réponse
-                    st.markdown("#### Sources")
-                    for source in result.sources:
-                        st.markdown(source.page_content)
-                        st.markdown(source.metadata["source"])
-                        st.markdown("---")
-                else:
-                    st.error("Veuillez poser une question valide.")
-    except Exception as e:
-        display_file_read_error(e, file_name=uploaded_file.name)
-else:
-    st.warning("Veuillez télécharger un fichier pour continuer.")
+# Interaction avec l'utilisateur pour la requête de Q&A
+query = st.text_area("Posez une question à propos de l'annexe fiscale")
 
-# Votre code supplémentaire ici (s'il y en a)
-# ...
+if st.button("Soumettre"):
+    if is_query_valid(query):
+        llm = get_llm(model="gpt-4", openai_api_key=openai_api_key, temperature=0)
+        result = query_folder(
+            folder_index=folder_index,
+            query=query,
+            return_all=False,
+            llm=llm,
+        )
+
+        st.markdown("#### Réponse")
+        st.markdown(result.answer)
+
+        # Affichage des sources relatives à la réponse
+        st.markdown("#### Sources")
+        for source in result.sources:
+            st.markdown(source.page_content)
+            st.markdown(source.metadata["source"])
+            st.markdown("---")
+    else:
+        st.error("Veuillez poser une question valide.")
