@@ -59,6 +59,7 @@ file_path = os.path.join(os.path.dirname(__file__), 'annexe2.pdf')
 try:
     with open(file_path, "rb") as file:
         file_content = file.read()
+        # Supposons que chunk_file et is_file_valid sont capables de gérer les données binaires
         chunked_file = chunk_file(file_content, chunk_size=300, chunk_overlap=0)
         
         if is_file_valid(file_content):
@@ -69,8 +70,11 @@ try:
                     vector_store="faiss",
                     openai_api_key=openai_api_key,
                 )
+        else:
+            st.error("Le fichier n'est pas valide ou n'a pas pu être traité.")
 except Exception as e:
-     st.error(f"Erreur lors de la lecture du fichier : {e}")
+    st.error(f"Erreur lors de la lecture du fichier : {e}")
+
 
 # Description de l'objectif de la plateforme
 with st.expander("À propos de cette plateforme"):
