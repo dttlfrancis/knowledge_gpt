@@ -21,12 +21,16 @@ from knowledge_gpt.ui import (
 # Configuration de la page Streamlit
 st.set_page_config(page_title="Deloitte - Annexe fiscale 2024", page_icon=":ledger:", layout="wide")
 
-# Affichage de l'en-tête avec le logo de Deloitte
-st.image("https://clipartcraft.com/images250_/deloitte-logo-high-resolution-3.png", width=200)
-st.title("Deloitte - Annexe fiscale 2024")
+col1, col2 = st.columns([1, 5])
+with col1:
+    st.image("https://clipartcraft.com/images250_/deloitte-logo-high-resolution-3.png", width=100)
+with col2:
+    st.markdown("# Deloitte - Annexe fiscale 2024")
 
-with st.echo():
-    st.lottie("https://lottie.host/daab29e2-776f-4308-804f-60a00e592381/eNlqUMlXbQ.json")
+# Chargement et affichage de l'animation Lottie avec une taille réduite
+lottie_animation = load_lottieurl("https://lottie.host/daab29e2-776f-4308-804f-60a00e592381/eNlqUMlXbQ.json")
+if lottie_animation:
+    st_lottie(lottie_animation, speed=1, width=150, height=150, loop=True, autoplay=True)
 
 # Activation du cache
 bootstrap_caching()
