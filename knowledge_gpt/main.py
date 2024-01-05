@@ -1,5 +1,7 @@
 import streamlit as st
 import requests
+from streamlit_lottie import st_lottie
+
 
 # Importations des modules spécifiques au projet
 from knowledge_gpt.core.caching import bootstrap_caching
