@@ -63,12 +63,13 @@ try:
     with open(file_path, "rb") as file:
         file_content = file.read()
         
-        # Utilisation de PyMuPDF pour extraire le texte d'un PDF
+        # Utiliser PyMuPDF pour extraire le texte du fichier PDF
         pdf_document = fitz.open(stream=file_content, filetype="pdf")
         text_content = ""
         for page in pdf_document:
             text_content += page.get_text()
-        
+
+        # Supposons que chunk_file et les autres fonctions peuvent traiter une chaîne de caractères
         chunked_file = chunk_file(text_content, chunk_size=300, chunk_overlap=0)
         
         if is_file_valid(text_content):
@@ -79,6 +80,9 @@ try:
                     vector_store="faiss",
                     openai_api_key=openai_api_key,
                 )
+                
+                # Continuer le traitement avec folder_index
+                # ...
         else:
             st.error("Le fichier n'est pas valide ou n'a pas pu être traité.")
 except Exception as e:
