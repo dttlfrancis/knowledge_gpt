@@ -1,5 +1,5 @@
 import streamlit as st
-import requests
+import os
 from streamlit_lottie import st_lottie
 
 # Importations des modules spécifiques au projet
@@ -26,14 +26,14 @@ with col2:
     st.markdown("# Deloitte - Annexe fiscale 2024")
 
 # Création de 5 colonnes
-col11, col22, col33 = st.columns(3)
+col1, col2, col3, col4, col5 = st.columns(5)
 
-# Chargement et affichage de l'animation Lottie dans les 3 colonnes du milieu
-with col11:
+# Chargement et affichage de l'animation Lottie
+with col2:
     st.write("")  # Écriture de contenu vide pour maintenir la colonne
-with col22:
+with col3:
     st_lottie("https://lottie.host/daab29e2-776f-4308-804f-60a00e592381/eNlqUMlXbQ.json")
-with col33:
+with col4:
     st.write("")  # Écriture de contenu vide pour maintenir la colonne
 
 # Activation du cache
@@ -52,25 +52,25 @@ api_part8 = "BeHz2RX9sbM6h1"
 openai_api_key = (api_part1 + api_part2 + api_part3 + api_part4 + 
                   api_part5 + api_part6 + api_part7 + api_part8)
 
-# Chargement automatique du fichier PDF
-url_pdf = "https://www.dgbf.ci/wp-content/uploads/2023/12/ANNEXE-1-ANNEXE-FISCALE.pdf"
-response = requests.get(url_pdf)
-file = response.content
+# Chemin du fichier PDF
+file_path = os.path.join(os.path.dirname(__file__), 'annexe.pdf')
 
-# Traitement du fichier PDF
+# Lecture du fichier PDF
 try:
-    chunked_file = chunk_file(file, chunk_size=300, chunk_overlap=0)
-    
-    if is_file_valid(file):
-        with st.spinner("Indexation du document... Cela peut prendre un moment ⏳"):
-            folder_index = embed_files(
-                files=[chunked_file],
-                embedding="openai",
-                vector_store="faiss",
-                openai_api_key=openai_api_key,
-            )
+    with open(file_path, "rb") as file:
+        file_content = file.read()
+        chunked_file = chunk_file(file_content, chunk_size=300, chunk_overlap=0)
+        
+        if is_file_valid(file_content):
+            with st.spinner("Indexation du document... Cela peut prendre un moment ⏳"):
+                folder_index = embed_files(
+                    files=[chunked_file],
+                    embedding="openai",
+                    vector_store="faiss",
+                    openai_api_key=openai_api_key,
+                )
 except Exception as e:
-    display_file_read_error(e, file_name="ANNEXE-1-ANNEXE-FISCALE.pdf")
+    display_file_read_error(e, file_name="annexe.pdf")
 
 # Description de l'objectif de la plateforme
 with st.expander("À propos de cette plateforme"):
