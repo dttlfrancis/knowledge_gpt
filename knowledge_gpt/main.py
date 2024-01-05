@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 from streamlit_lottie import st_lottie
+import fitz  # PyMuPDF
 
 # Importations des modules spécifiques au projet
 from knowledge_gpt.core.caching import bootstrap_caching
@@ -56,13 +57,21 @@ openai_api_key = (api_part1 + api_part2 + api_part3 + api_part4 +
 file_path = os.path.join(os.path.dirname(__file__), 'annexe2.pdf')
 
 # Lecture du fichier PDF
+
+
 try:
     with open(file_path, "rb") as file:
         file_content = file.read()
-        # Supposons que chunk_file et is_file_valid sont capables de gérer les données binaires
-        chunked_file = chunk_file(file_content, chunk_size=300, chunk_overlap=0)
         
-        if is_file_valid(file_content):
+        # Utilisation de PyMuPDF pour extraire le texte d'un PDF
+        pdf_document = fitz.open(stream=file_content, filetype="pdf")
+        text_content = ""
+        for page in pdf_document:
+            text_content += page.get_text()
+        
+        chunked_file = chunk_file(text_content, chunk_size=300, chunk_overlap=0)
+        
+        if is_file_valid(text_content):
             with st.spinner("Indexation du document... Cela peut prendre un moment ⏳"):
                 folder_index = embed_files(
                     files=[chunked_file],
@@ -74,6 +83,7 @@ try:
             st.error("Le fichier n'est pas valide ou n'a pas pu être traité.")
 except Exception as e:
     st.error(f"Erreur lors de la lecture du fichier : {e}")
+
 
 
 # Description de l'objectif de la plateforme
