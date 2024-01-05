@@ -28,7 +28,7 @@ with col2:
     st.markdown("# Deloitte - Annexe fiscale 2024")
 
 with st.echo():
-    st.lottie("https://assets5.lottiefiles.com/packages/lf20_V9t630.json")
+    st_lottie("https://lottie.host/daab29e2-776f-4308-804f-60a00e592381/eNlqUMlXbQ.json")
 
 # Activation du cache
 bootstrap_caching()
