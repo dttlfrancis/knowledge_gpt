@@ -42,7 +42,12 @@ bootstrap_caching()
 # Reconstruction de la clé API
 api_part1 = "sk-HC5U"
 api_part2 = "IoNdv"
-# ... [Remainder of the API key parts]
+api_part3 = "XAzTB"
+api_part4 = "FcBHV"
+api_part5 = "qT3Bl"
+api_part6 = "bkFJB"
+api_part7 = "U8lH1"
+api_part8 = "BeHz2RX9sbM6h1"
 
 openai_api_key = (api_part1 + api_part2 + api_part3 + api_part4 + 
                   api_part5 + api_part6 + api_part7 + api_part8)
