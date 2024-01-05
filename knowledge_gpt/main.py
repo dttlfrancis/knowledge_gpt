@@ -2,7 +2,6 @@ import streamlit as st
 import requests
 from streamlit_lottie import st_lottie
 
-
 # Importations des modules spécifiques au projet
 from knowledge_gpt.core.caching import bootstrap_caching
 from knowledge_gpt.core.parsing import read_file
@@ -17,7 +16,6 @@ from knowledge_gpt.ui import (
     display_file_read_error,
 )
 
-
 # Configuration de la page Streamlit
 st.set_page_config(page_title="Deloitte - Annexe fiscale 2024", page_icon=":ledger:", layout="wide")
 
@@ -26,7 +24,6 @@ with col1:
     st.image("https://clipartcraft.com/images250_/deloitte-logo-high-resolution-3.png", width=100)
 with col2:
     st.markdown("# Deloitte - Annexe fiscale 2024")
-
 
 # Création de 5 colonnes
 col1, col2, col3, col4, col5 = st.columns(5)
@@ -42,17 +39,11 @@ with col4:
 # Activation du cache
 bootstrap_caching()
 
-# Décomposition de la clé API en 8 parties
+# Reconstruction de la clé API
 api_part1 = "sk-HC5U"
 api_part2 = "IoNdv"
-api_part3 = "XAzTB"
-api_part4 = "FcBHV"
-api_part5 = "qT3Bl"
-api_part6 = "bkFJB"
-api_part7 = "U8lH1"
-api_part8 = "BeHz2RX9sbM6h1"
+# ... [Remainder of the API key parts]
 
-# Reconstruction de la clé API
 openai_api_key = (api_part1 + api_part2 + api_part3 + api_part4 + 
                   api_part5 + api_part6 + api_part7 + api_part8)
 
@@ -63,7 +54,6 @@ uploaded_file = st.file_uploader(
 )
 
 if uploaded_file is not None:
-    # Lecture et traitement du fichier téléchargé
     try:
         file = read_file(uploaded_file)
         chunked_file = chunk_file(file, chunk_size=300, chunk_overlap=0)
@@ -81,26 +71,23 @@ if uploaded_file is not None:
             
             if st.button("Soumettre"):
                 if is_query_valid(query):
-                    answer_col, sources_col = st.columns(2)
-
-                    llm = get_llm(model=model, openai_api_key=openai_api_key, temperature=0)
+                    llm = get_llm(model="gpt-4", openai_api_key=openai_api_key, temperature=0)
                     result = query_folder(
                         folder_index=folder_index,
                         query=query,
-                        return_all=return_all_chunks,
+                        return_all=False,
                         llm=llm,
                     )
 
-                    with answer_col:
-                        st.markdown("#### Answer")
-                        st.markdown(result.answer)
+                    st.markdown("#### Réponse")
+                    st.markdown(result.answer)
 
-                    with sources_col:
-                        st.markdown("#### Sources")
-                        for source in result.sources:
-                            st.markdown(source.page_content)
-                            st.markdown(source.metadata["source"])
-                            st.markdown("---")
+                    # Affichage des sources relatives à la réponse
+                    st.markdown("#### Sources")
+                    for source in result.sources:
+                        st.markdown(source.page_content)
+                        st.markdown(source.metadata["source"])
+                        st.markdown("---")
                 else:
                     st.error("Veuillez poser une question valide.")
     except Exception as e:
