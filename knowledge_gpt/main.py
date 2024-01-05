@@ -17,12 +17,6 @@ from knowledge_gpt.ui import (
     display_file_read_error,
 )
 
-# Fonction pour charger une animation Lottie via une URL
-def load_lottieurl(url: str):
-    r = requests.get(url)
-    if r.status_code != 200:
-        return None
-    return r.json()
 
 # Configuration de la page Streamlit
 st.set_page_config(page_title="Deloitte - Annexe fiscale 2024", page_icon=":ledger:", layout="wide")
@@ -31,9 +25,8 @@ st.set_page_config(page_title="Deloitte - Annexe fiscale 2024", page_icon=":ledg
 st.image("https://clipartcraft.com/images250_/deloitte-logo-high-resolution-3.png", width=200)
 st.title("Deloitte - Annexe fiscale 2024")
 
-# Affichage de l'animation Lottie
-lottie_animation = load_lottieurl("https://lottie.host/2fa430c2-07ed-4641-992e-b937e49bc5a9/EmLMvJBk3V.json")
-st_lottie(lottie_animation, speed=1, width=300, height=300, loop=True, autoplay=True)
+with st.echo():
+    st.lottie("https://lottie.host/daab29e2-776f-4308-804f-60a00e592381/eNlqUMlXbQ.json")
 
 # Activation du cache
 bootstrap_caching()
