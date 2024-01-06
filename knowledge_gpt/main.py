@@ -23,10 +23,17 @@ with col1:
 with col2:
     st.markdown("# Deloitte - Annexe fiscale 2024")
 
-# Chargement et affichage de l'animation Lottie
+# Création de 5 colonnes
 col1, col2, col3, col4, col5 = st.columns(5)
+
+# Chargement et affichage de l'animation Lottie dans les 3 colonnes du milieu
+with col2:
+    st.write("")  # Écriture de contenu vide pour maintenir la colonne
 with col3:
-    st_lottie(https://lottie.host/daab29e2-776f-4308-804f-60a00e592381/eNlqUMlXbQ.json)
+    st_lottie("https://lottie.host/daab29e2-776f-4308-804f-60a00e592381/eNlqUMlXbQ.json")
+with col4:
+    st.write("")  # Écriture de contenu vide pour maintenir la colonne
+
 
 # Activation du cache
 bootstrap_caching()
