@@ -1,17 +1,15 @@
 import streamlit as st
 import os
-from streamlit_lottie import st_lottie
 import fitz  # PyMuPDF
+from streamlit_lottie import st_lottie
 
 # Importations des modules spécifiques au projet
 from knowledge_gpt.core.caching import bootstrap_caching
-from knowledge_gpt.core.parsing import read_file
 from knowledge_gpt.core.chunking import chunk_file
 from knowledge_gpt.core.embedding import embed_files
 from knowledge_gpt.core.qa import query_folder
 from knowledge_gpt.core.utils import get_llm
 from knowledge_gpt.ui import (
-    wrap_doc_in_html,
     is_query_valid,
     is_file_valid,
     display_file_read_error,
@@ -26,16 +24,10 @@ with col1:
 with col2:
     st.markdown("# Deloitte - Annexe fiscale 2024")
 
-# Création de 5 colonnes
-col1, col2, col3, col4, col5 = st.columns(5)
-
 # Chargement et affichage de l'animation Lottie
-with col2:
-    st.write("")  # Écriture de contenu vide pour maintenir la colonne
+col1, col2, col3, col4, col5 = st.columns(5)
 with col3:
     st_lottie("https://lottie.host/daab29e2-776f-4308-804f-60a00e592381/eNlqUMlXbQ.json")
-with col4:
-    st.write("")  # Écriture de contenu vide pour maintenir la colonne
 
 # Activation du cache
 bootstrap_caching()
@@ -49,16 +41,13 @@ api_part5 = "qT3Bl"
 api_part6 = "bkFJB"
 api_part7 = "U8lH1"
 api_part8 = "BeHz2RX9sbM6h1"
-
 openai_api_key = (api_part1 + api_part2 + api_part3 + api_part4 + 
                   api_part5 + api_part6 + api_part7 + api_part8)
 
 # Chemin du fichier PDF
 file_path = os.path.join(os.path.dirname(__file__), 'annexe2.pdf')
 
-# Lecture du fichier PDF
-
-
+# Lecture et traitement du fichier PDF
 try:
     with open(file_path, "rb") as file:
         file_content = file.read()
@@ -69,7 +58,6 @@ try:
         for page in pdf_document:
             text_content += page.get_text()
 
-        # Supposons que chunk_file et les autres fonctions peuvent traiter une chaîne de caractères
         chunked_file = chunk_file(text_content, chunk_size=300, chunk_overlap=0)
         
         if is_file_valid(text_content):
@@ -80,15 +68,10 @@ try:
                     vector_store="faiss",
                     openai_api_key=openai_api_key,
                 )
-                
-                # Continuer le traitement avec folder_index
-                # ...
         else:
             st.error("Le fichier n'est pas valide ou n'a pas pu être traité.")
 except Exception as e:
     st.error(f"Erreur lors de la lecture du fichier : {e}")
-
-
 
 # Description de l'objectif de la plateforme
 with st.expander("À propos de cette plateforme"):
