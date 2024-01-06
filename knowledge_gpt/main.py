@@ -2,6 +2,9 @@ import streamlit as st
 import os
 import fitz  # PyMuPDF
 from streamlit_lottie import st_lottie
+from io import BytesIO
+
+# Importations des modules spécifiques au projet
 from knowledge_gpt.core.caching import bootstrap_caching
 from knowledge_gpt.core.chunking import chunk_file
 from knowledge_gpt.core.embedding import embed_files
@@ -12,7 +15,7 @@ from knowledge_gpt.ui import (
     is_file_valid,
     display_file_read_error,
 )
-from knowledge_gpt.core.parsing import File, Document
+from knowledge_gpt.core.parsing import PdfFile
 
 # Configuration de la page Streamlit
 st.set_page_config(page_title="Deloitte - Annexe fiscale 2024", page_icon=":ledger:", layout="wide")
@@ -56,20 +59,8 @@ file_path = os.path.join(os.path.dirname(__file__), 'annexe2.pdf')
 # Lecture et traitement du fichier PDF
 try:
     with open(file_path, "rb") as file:
-        file_content = file.read()
+        file_obj = PdfFile.from_bytes(BytesIO(file.read()))
         
-        # Utiliser PyMuPDF pour extraire le texte du fichier PDF
-        pdf_document = fitz.open(stream=file_content, filetype="pdf")
-        docs = []
-        for page_number, page in enumerate(pdf_document, start=1):
-            text = page.get_text()
-            doc = Document(
-                page_content=text,
-                metadata={"page": page_number}
-            )
-            docs.append(doc)
-
-        file_obj = File(docs=docs)
         chunked_file = chunk_file(file_obj, chunk_size=300, chunk_overlap=0)
         
         if is_file_valid(chunked_file):
