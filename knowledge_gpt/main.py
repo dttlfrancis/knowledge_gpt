@@ -112,4 +112,7 @@ if st.button("Soumettre"):
         st.markdown("#### Sources")
         for source in result.sources:
             st.markdown(source.page_content)
-            st.markdown
+            st.markdown(source.metadata["source"])
+            st.markdown("---")
+    else:
+        st.error("Veuillez poser une question valide.")
