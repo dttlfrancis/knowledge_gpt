@@ -37,7 +37,6 @@ with col3:
 with col4:
     st.write("")  # Écriture de contenu vide pour maintenir la colonne
 
-
 # Activation du cache
 bootstrap_caching()
 
@@ -55,11 +54,14 @@ openai_api_key = (api_part1 + api_part2 + api_part3 + api_part4 +
 
 # Chemin du fichier PDF
 file_path = os.path.join(os.path.dirname(__file__), 'annexe2.pdf')
+file_name = 'annexe2.pdf'
 
 # Lecture et traitement du fichier PDF
 try:
     with open(file_path, "rb") as file:
-        file_obj = PdfFile.from_bytes(BytesIO(file.read()))
+        file_bytes = BytesIO(file.read())
+        file_bytes.name = file_name
+        file_obj = PdfFile.from_bytes(file_bytes)
         
         chunked_file = chunk_file(file_obj, chunk_size=300, chunk_overlap=0)
         
