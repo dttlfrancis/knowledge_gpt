@@ -2,8 +2,6 @@ import streamlit as st
 import os
 import fitz  # PyMuPDF
 from streamlit_lottie import st_lottie
-
-# Importations des modules spécifiques au projet
 from knowledge_gpt.core.caching import bootstrap_caching
 from knowledge_gpt.core.chunking import chunk_file
 from knowledge_gpt.core.embedding import embed_files
@@ -14,6 +12,7 @@ from knowledge_gpt.ui import (
     is_file_valid,
     display_file_read_error,
 )
+from knowledge_gpt.core.parsing import File, Document
 
 # Configuration de la page Streamlit
 st.set_page_config(page_title="Deloitte - Annexe fiscale 2024", page_icon=":ledger:", layout="wide")
@@ -27,7 +26,8 @@ with col2:
 # Chargement et affichage de l'animation Lottie
 col1, col2, col3, col4, col5 = st.columns(5)
 with col3:
-    st_lottie("https://lottie.host/daab29e2-776f-4308-804f-60a00e592381/eNlqUMlXbQ.json")
+    lottie_url = "https://lottie.host/daab29e2-776f-4308-804f-60a00e592381/eNlqUMlXbQ.json"
+    st_lottie(st_lottie(url=lottie_url, width=300, height=300, key="lottie"), key="main")
 
 # Activation du cache
 bootstrap_caching()
@@ -54,13 +54,19 @@ try:
         
         # Utiliser PyMuPDF pour extraire le texte du fichier PDF
         pdf_document = fitz.open(stream=file_content, filetype="pdf")
-        text_content = ""
-        for page in pdf_document:
-            text_content += page.get_text()
+        docs = []
+        for page_number, page in enumerate(pdf_document, start=1):
+            text = page.get_text()
+            doc = Document(
+                page_content=text,
+                metadata={"page": page_number}
+            )
+            docs.append(doc)
 
-        chunked_file = chunk_file(text_content, chunk_size=300, chunk_overlap=0)
+        file_obj = File(docs=docs)
+        chunked_file = chunk_file(file_obj, chunk_size=300, chunk_overlap=0)
         
-        if is_file_valid(text_content):
+        if is_file_valid(chunked_file):
             with st.spinner("Indexation du document... Cela peut prendre un moment ⏳"):
                 folder_index = embed_files(
                     files=[chunked_file],
@@ -100,7 +106,4 @@ if st.button("Soumettre"):
         st.markdown("#### Sources")
         for source in result.sources:
             st.markdown(source.page_content)
-            st.markdown(source.metadata["source"])
-            st.markdown("---")
-    else:
-        st.error("Veuillez poser une question valide.")
+            st.markdown
