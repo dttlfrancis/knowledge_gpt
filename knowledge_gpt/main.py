@@ -26,8 +26,7 @@ with col2:
 # Chargement et affichage de l'animation Lottie
 col1, col2, col3, col4, col5 = st.columns(5)
 with col3:
-    lottie_url = "https://lottie.host/daab29e2-776f-4308-804f-60a00e592381/eNlqUMlXbQ.json"
-    st_lottie(st_lottie(url=lottie_url, width=300, height=300, key="lottie"), key="main")
+    st_lottie(https://lottie.host/daab29e2-776f-4308-804f-60a00e592381/eNlqUMlXbQ.json)
 
 # Activation du cache
 bootstrap_caching()
