@@ -53,7 +53,7 @@ openai_api_key = (api_part1 + api_part2 + api_part3 + api_part4 +
                   api_part5 + api_part6 + api_part7 + api_part8)
 
 # Chemin du fichier PDF
-file_path = os.path.join(os.path.dirname(__file__), 'annexe2.pdf')
+file_path = os.path.join(os.path.dirname(__file__), 'annexe3.pdf')
 file_name = 'annexe2.pdf'
 
 # Lecture et traitement du fichier PDF
